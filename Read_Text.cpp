@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <malloc.h>
 #include <ctype.h>
 #include <assert.h>
 #include <sys/stat.h>
@@ -15,25 +16,13 @@ int main(int argc, char* argv[])
     FILE* output_address = NULL;
     struct stat statistics = {};
     char* buffer = NULL;
-    int number_of_str = 0;
+    int number_of_str = 1;
 
     check_file_founded(argc, argv[0]);
     check_file_opening(argv[1], &input_address);
     check_file_opening(argv[2], &output_address);
 
-    fstat(fileno(input_address), &statistics);
-//    printf("%ld\n", statistics.st_size);
-    buffer = (char*) calloc(statistics.st_size, sizeof(char));
-    fread(buffer, sizeof(char), statistics.st_size, input_address);
-    /*
-    for (int i = 0; i < statistics.st_size; i++)
-    {
-        putchar(buffer[i]);
-    }
-    */
-    number_of_str = str_counter(buffer);
-    text = (char**) calloc(number_of_str, sizeof(char*));
-    make_indicator_massive(text, buffer);
+    read_text(input_address, &statistics, &buffer, &text, &number_of_str);
 
     booble_sort(text, number_of_str, my_strcmp);
     output_text(output_address, text, number_of_str);
@@ -84,10 +73,32 @@ void check_file_closing(FILE* input_address)
     return;
 }
 
-void make_indicator_massive(char* text[], char* buffer)
+void read_text(FILE* input_address, struct stat* statistics, char** buffer, char*** text, int* number_of_str)
+{
+    fstat(fileno(input_address), statistics);
+
+//    printf("%ld\n", statistics.st_size);
+
+    *buffer = (char*) calloc(statistics->st_size, sizeof(char));
+    fread(*buffer, sizeof(char), statistics->st_size, input_address);
+
+    /*
+    for (int i = 0; i < statistics.st_size; i++)
+    {
+        putchar(buffer[i]);
+    }
+    */
+
+    //*number_of_str = str_counter(*buffer);
+    *text = (char**) calloc(*number_of_str, sizeof(char*));
+    make_indicator_massive(*text, *buffer, number_of_str);
+}
+
+void make_indicator_massive(char* text[], char* buffer, int* number_of_str)
 {
     assert(text);
     assert(buffer);
+    assert(number_of_str);
 
     char* str_address = NULL;
     int str_number = 0;
@@ -96,13 +107,20 @@ void make_indicator_massive(char* text[], char* buffer)
     str_number++;
     str_address = strchr(buffer, '\n');
     assert(str_address);
+
     while (str_address != NULL)
     {
+        if (str_number > *number_of_str)
+        {
+            *number_of_str = *number_of_str*2;
+            text = (char**) realloc((void*) text, *number_of_str * sizeof(char*));
+        }
         text[str_number] = str_address+1;
         //printf("%d\n", str_number);
         str_number++;
         str_address = strchr(str_address+1, '\n');
     }
+    *number_of_str = str_number;
 
     return;
 }

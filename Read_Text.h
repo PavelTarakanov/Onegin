@@ -8,8 +8,7 @@ void check_file_founded(int argc, const char *input_address);
 void check_file_opening(const char *input_address, FILE** file_ptr);
 void check_file_closing(FILE* input_address);
 
-void make_indicator_massive(char* text[], char* buffer);
-
+void make_indicator_massive(char* text[], char* buffer, int* number_of_str);
 
 int str_counter(char* buffer);
 
@@ -21,4 +20,5 @@ int my_indicator_cmp(const char* ind_1, const char* ind_2);
 
 void output_text(FILE* input_address, char* text[], int number_of_str);
 
+void read_text(FILE* input_address, struct stat* statistics, char** buffer, char*** text, int* number_of_str);
 #endif //READ_TEXT_H
