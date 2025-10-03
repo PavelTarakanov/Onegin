@@ -4,9 +4,9 @@
 const int NUMBER_OF_FILES = 2;
 const int MAX_STR_LENGTH = 200;
 
-void check_file_founded(int argc, const char *input_address);
-void check_file_opening(const char *input_address, FILE** file_ptr);
-void check_file_closing(FILE* input_address);
+int check_file_founded(int argc, const char *input_address);
+int check_file_opening(const char *input_address, FILE** file_ptr);
+int check_file_closing(FILE* input_address);
 
 void make_indicator_massive(char* text[], char* buffer, int* number_of_str);
 

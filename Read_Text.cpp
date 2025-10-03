@@ -18,9 +18,13 @@ int main(int argc, char* argv[])
     char* buffer = NULL;
     int number_of_str = 1;
 
-    check_file_founded(argc, argv[0]);
-    check_file_opening(argv[1], &input_address);
-    check_file_opening(argv[2], &output_address);
+    if(check_file_founded(argc, argv[0]))
+        return 0;
+
+    if (check_file_opening(argv[1], &input_address))
+        return 0;
+    if (check_file_opening(argv[2], &output_address))
+        return 0;
 
     read_text(input_address, &statistics, &buffer, &text, &number_of_str);
 
@@ -37,40 +41,12 @@ int main(int argc, char* argv[])
     free(buffer);
     free(text);
 
-    check_file_closing(input_address);
-    check_file_closing(output_address);
-}
+    if (check_file_closing(input_address))
+        return 0;
+    if (check_file_closing(output_address))
+        return 0;
 
-void check_file_founded(int argc, const char *input_address)
-{
-    if (argc < NUMBER_OF_FILES)
-    {
-        fprintf(stderr, "Using %s input_address\n", input_address);
-    }
-
-    return;
-}
-
-void check_file_opening(const char *input_address, FILE** file_ptr)
-{
-    if ((*file_ptr = fopen(input_address, "a+")) == NULL)
-    {
-        fprintf(stderr, "Can't open file\" %s\"\n", input_address);
-    }
-
-    return;
-}
-
-void check_file_closing(FILE* input_address)
-{
-    assert(input_address);
-
-    if (fclose(input_address) != 0)
-    {
-        fprintf(stderr, "Error while closing file\n");
-    }
-
-    return;
+    return 0;
 }
 
 void read_text(FILE* input_address, struct stat* statistics, char** buffer, char*** text, int* number_of_str)
